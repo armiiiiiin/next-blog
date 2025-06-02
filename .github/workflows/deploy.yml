@@ -1,0 +1,27 @@
+name: Deploy
+on:
+    push:
+        branches: [main]
+
+jobs:
+    deploy:
+        runs-on: self-hosted
+
+        steps:
+             - uses: actions/checkout@v4.2.1
+
+             - name: Delete Previous Process silently
+               continue-on-error: true
+               run: pm2 delete webiru.ir/nextblog
+
+             - name: Install Dependencies
+               run: npm install
+
+             - name: Build
+               run: npm next build
+
+             - name: start a New Process
+               run: pm2 next start --name webiru.ir/nextblog
+
+             - name: Save Current Process List
+               run: pm2 save
